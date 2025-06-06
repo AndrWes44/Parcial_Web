@@ -1,0 +1,61 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Proyecto.Models.TicketHistorialViewModel
+
+@{
+    ViewData["Title"] = "Historial del Ticket";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">Historial - Ticket #@Model.TicketId</h2>
+
+    <a href="@Url.Action("DetalleTicket", "Admin", new { id = Model.TicketId })" class="btn btn-secondary mb-3">
+        ← Volver al Detalle del Ticket
+    </a>
+
+    <h4>Cambios de Estado</h4>
+    <table class="table table-striped table-bordered mb-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Fecha</th>
+                <th>Estado Anterior</th>
+                <th>Nuevo Estado</th>
+                <th>Cambiado Por</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cambio in Model.CambiosEstado)
+            {
+                <tr>
+                    <td>@cambio.FechaCambio.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@cambio.EstadoAnterior</td>
+                    <td>@cambio.NuevoEstado</td>
+                    <td>@cambio.CambiadoPor?.NombreUsuario</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4>Comentarios</h4>
+    @if (Model.Comentarios.Any())
+    {
+        <ul class="list-group">
+            @foreach (var comentario in Model.Comentarios)
+            {
+                <li class="list-group-item">
+                    <strong>@comentario.Usuario?.NombreUsuario</strong> (@comentario.FechaCreacion.ToString("dd/MM/yyyy HH:mm")):<br />
+                    @comentario.Contenido
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No hay comentarios registrados.</p>
+    }
+
+    <a href="@Url.Action("Tickets", "Admin")" class="btn btn-secondary mt-3">← Regresar a Mis Tickets</a>
+</div>
+
+

@@ -1,0 +1,79 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<Proyecto.Models.Ticket>
+
+@{
+    ViewData["Title"] = "Dashboard Técnico";
+}
+
+<div class="container-fluid mt-4">
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["MensajeExito"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="@Url.Action("Index", "Tecnico")" class="list-group-item list-group-item-action active">
+                    Mis Tickets
+                </a>
+                <a href="@Url.Action("CrearTicket", "Tecnico")" class="list-group-item list-group-item-action">
+                    Crear Ticket
+                </a>
+                <a href="@Url.Action("MisTicketsCreados", "Tecnico")" class="list-group-item list-group-item-action">
+                    Tickets que he creado
+                </a>
+            </div>
+        </div>
+        
+        <!-- Contenido principal -->
+        <div class="col-md-9">
+            <h3>Tickets Asignados</h3>
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Prioridad</th>
+                            <th>Estado</th>
+                            <th>Categoría</th>
+                            <th>Fecha de creación</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ticket in Model)
+                        {
+                            <tr>
+                                <td>@ticket.Titulo</td>
+                                <td>@ticket.Prioridad</td>
+                                <td>@ticket.Estado</td>
+                                <td>@ticket.Categoria?.Nombre</td>
+                                <td>@ticket.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <a class="btn btn-sm btn-primary" href="@Url.Action("DetalleTicket", "Tecnico", new { id = ticket.Id })">
+                                        Ver Detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No tienes tickets asignados actualmente.</p>
+            }
+        </div>
+    </div>
+</div>
+
+
+

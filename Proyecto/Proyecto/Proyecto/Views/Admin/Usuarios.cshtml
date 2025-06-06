@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Proyecto.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<div class="container mt-4">
+    <h2>👥 Gestión de Usuarios</h2>
+    <hr />
+
+    <a asp-action="CrearUsuario" class="btn btn-primary mb-3">➕ Nuevo Usuario</a>
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre de Usuario</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Teléfono</th>
+                <th>Empresa</th>
+                <th>Contacto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.NombreUsuario</td>
+                    <td>@usuario.Correo</td>
+                    <td>@usuario.Rol?.Nombre</td>
+                    <td>@usuario.Telefono</td>
+                    <td>@usuario.Empresa</td>
+                    <td>@usuario.Contacto</td>
+                    <td>
+                        <a asp-action="EditarUsuario" asp-route-id="@usuario.Id" class="btn btn-sm btn-warning">✏️ Editar</a>
+                        <a asp-action="EliminarUsuario" asp-route-id="@usuario.Id" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar este usuario?');">🗑️ Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a href="@Url.Action("Index", "Admin")" class="btn btn-secondary mt-3">← Regresar a Inicio</a>
+</div>
+

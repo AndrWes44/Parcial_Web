@@ -1,0 +1,154 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Panel de Administración";
+    var totalTickets = ViewBag.TotalTickets;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            padding-top: 1rem;
+            color: white;
+        }
+
+            .sidebar a {
+                color: white;
+                text-decoration: none;
+                display: block;
+                padding: 10px;
+            }
+
+                .sidebar a:hover {
+                    background-color: #495057;
+                }
+
+        .main-content {
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Barra lateral -->
+            <div class="col-md-2 sidebar">
+                <h5 class="text-center">Administrador</h5>
+                <a href="/Admin/Tickets">📋 Tickets</a>
+                <a href="/Admin/CrearTicket">➕ Crear Ticket</a>
+                <a href="/Admin/Usuarios">👥 Gestión de Usuarios</a>
+            </div>
+
+            <!-- Contenido principal -->
+            <div class="col-md-10 main-content">
+                <h2>Dashboard</h2>
+                <p>Total de tickets: <strong>@totalTickets</strong></p>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h5>Tickets por Estado</h5>
+                        <canvas id="graficoEstado"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Tickets por Prioridad</h5>
+                        <canvas id="graficoPrioridad"></canvas>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <h5>Tickets por Mes</h5>
+                        <canvas id="graficoMensual"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        fetch('@Url.Action("DashboardGraficas", "Admin")')
+            .then(response => response.json())
+            .then(data => {
+                // Tickets por Estado
+                const ctxEstado = document.getElementById('graficoEstado');
+                new Chart(ctxEstado, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.estados.map(e => e.estado),
+                        datasets: [{
+                            label: 'Tickets por Estado',
+                            data: data.estados.map(e => e.total),
+                            backgroundColor: ['#007bff', '#ffc107', '#28a745', '#dc3545']
+                        }]
+                    }
+                });
+
+                // Tickets por Prioridad
+                const ctxPrioridad = document.getElementById('graficoPrioridad');
+                new Chart(ctxPrioridad, {
+                    type: 'bar',
+                    data: {
+                        labels: data.prioridades.map(p => p.prioridad),
+                        datasets: [{
+                            label: 'Tickets por Prioridad',
+                            data: data.prioridades.map(p => p.total),
+                            backgroundColor: ['#dc3545', '#ffc107', '#28a745']
+                        }]
+                    }
+                });
+
+                       // Tickets por Mes
+        const ctxMes = document.getElementById('graficoMensual');
+        new Chart(ctxMes, {
+            type: 'bar',
+            data: {
+                labels: data.porMes.map(m => `${m.mes}/${m.anio}`),
+                datasets: [{
+                    label: 'Tickets por Mes',
+                    data: data.porMes.map(m => m.total),
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ` ${context.parsed.y} tickets`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Mes/Año' },
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Cantidad de Tickets' }
+                    }
+                }
+            }
+        });
+
+            });
+    </script>
+</body>
+</html>
+
+
+

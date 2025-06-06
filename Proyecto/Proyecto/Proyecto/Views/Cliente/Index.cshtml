@@ -1,0 +1,78 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<Proyecto.Models.Ticket>
+
+@{
+    ViewData["Title"] = "Dashboard Cliente";
+}
+
+<div class="container-fluid mt-4">
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["MensajeExito"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="@Url.Action("Index", "Cliente")" class="list-group-item list-group-item-action active">
+                    Mis Tickets
+                </a>
+                <a href="@Url.Action("CrearTicket", "Cliente")" class="list-group-item list-group-item-action">
+                    Crear Ticket
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="col-md-9">
+            <h3>Tickets Creados</h3>
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Prioridad</th>
+                            <th>Estado</th>
+                            <th>Categoría</th>
+                            <th>Fecha de creación</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ticket in Model)
+                        {
+                            <tr>
+                                <td>@ticket.Titulo</td>
+                                <td>@ticket.Prioridad</td>
+                                <td>@ticket.Estado</td>
+                                <td>@ticket.Categoria?.Nombre</td>
+                                <td>@ticket.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <a class="btn btn-sm btn-info" href="@Url.Action("DetalleTicket", "Cliente", new { id = ticket.Id })">
+                                        Ver Detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info mt-3">
+                    No has creado ningún ticket aún.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+

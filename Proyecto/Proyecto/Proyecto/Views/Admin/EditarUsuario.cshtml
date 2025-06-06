@@ -1,0 +1,80 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Proyecto.Models.Usuario
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<div class="container mt-4">
+    <h2>✏️ Editar Usuario</h2>
+    <hr />
+
+    <form asp-action="EditarUsuario" method="post" class="row g-3">
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="col-md-6">
+            <label asp-for="NombreUsuario" class="form-label"></label>
+            <input asp-for="NombreUsuario" class="form-control" />
+            <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Correo" class="form-label"></label>
+            <input asp-for="Correo" class="form-control" type="email" />
+            <span asp-validation-for="Correo" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Contrasena" class="form-label"></label>
+            <input asp-for="Contrasena" class="form-control"  />
+            <span asp-validation-for="Contrasena" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Telefono" class="form-label"></label>
+            <input asp-for="Telefono" class="form-control" />
+            <span asp-validation-for="Telefono" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Empresa" class="form-label"></label>
+            <input asp-for="Empresa" class="form-control" />
+            <span asp-validation-for="Empresa" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Contacto" class="form-label"></label>
+            <input asp-for="Contacto" class="form-control" />
+            <span asp-validation-for="Contacto" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="RolId" class="form-label">Rol</label>
+            <select asp-for="RolId" asp-items="ViewBag.Roles" class="form-select">
+                <option disabled>-- Seleccione un rol --</option>
+            </select>
+            <span asp-validation-for="RolId" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Tipo" class="form-label">Tipo de Usuario</label>
+            <select asp-for="Tipo" class="form-select">
+                <option disabled selected value="">-- Seleccione el tipo --</option>
+                <option value="Interno">Interno</option>
+                <option value="Externo">Externo</option>
+            </select>
+            <span asp-validation-for="Tipo" class="text-danger"></span>
+        </div>
+
+        <div class="col-12 mt-3">
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a asp-action="Usuarios" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

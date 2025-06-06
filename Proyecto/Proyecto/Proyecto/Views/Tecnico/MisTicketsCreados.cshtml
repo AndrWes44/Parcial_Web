@@ -1,0 +1,41 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Proyecto.Models.Ticket>
+
+@{
+    ViewData["Title"] = "Mis Tickets Creados";
+}
+
+<div class="container mt-4">
+    <h2>Mis Tickets Creados</h2>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Categoría</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Fecha</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ticket in Model)
+            {
+                <tr>
+                    <td>@ticket.Titulo</td>
+                    <td>@ticket.Categoria?.Nombre</td>
+                    <td>@ticket.Estado</td>
+                    <td>@ticket.Prioridad</td>
+                    <td>@ticket.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a asp-action="DetalleTicketCreador" asp-route-id="@ticket.Id" class="btn btn-sm btn-info">Ver</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a href="@Url.Action("Index", "Tecnico")" class="btn btn-secondary mt-3">← Regresar a Mis Tickets</a>
+</div>
+

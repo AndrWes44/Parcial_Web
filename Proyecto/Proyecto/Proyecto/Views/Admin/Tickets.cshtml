@@ -1,0 +1,107 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Proyecto.Models.Ticket>
+
+@{
+    ViewData["Title"] = "Lista de Tickets";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">📋 Lista de Tickets</h2>
+    @if (TempData["MensajeExito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["MensajeExito"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Título</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Categoría</th>
+                <th>Creado Por</th>
+                <th>Asignado A</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                int contador = 1;
+                foreach (var ticket in Model)
+                {
+                    <tr>
+                        <td>@contador</td>
+                        <td>@ticket.Titulo</td>
+                        <td>
+                            <span class="badge bg-@GetEstadoColor(ticket.Estado)">
+                                @ticket.Estado
+                            </span>
+                        </td>
+                        <td>@ticket.Prioridad</td>
+                        <td>@ticket.Categoria?.Nombre</td>
+                        <td>@ticket.CreadoPor?.NombreUsuario</td>
+                        <td>
+                            @{
+                                var asignacion = ticket.Asignaciones?.OrderByDescending(a => a.FechaAsignacion).FirstOrDefault();
+                                var tecnicoAsignado = asignacion?.Tecnico?.NombreUsuario;
+                            }
+
+                            @if (!string.IsNullOrEmpty(tecnicoAsignado))
+                            {
+                                @tecnicoAsignado
+                            }
+                            else
+                            {
+                                <span class="text-danger">Sin asignar</span>
+                            }
+                        </td>
+                        <td>@ticket.FechaCreacion</td>
+                        <td>
+                            <a class="btn btn-sm btn-info" asp-action="DetalleTicket" asp-route-id="@ticket.Id">Ver</a>
+                            <a class="btn btn-sm btn-warning" asp-action="EditarTicket" asp-route-id="@ticket.Id">Editar</a>
+                            <a class="btn btn-sm btn-danger" asp-action="EliminarTicket" asp-route-id="@ticket.Id" onclick="return confirm('¿Está seguro de eliminar este ticket?');">Eliminar</a>
+                            <a class="btn btn-sm btn-success" asp-action="HistorialTicket" asp-route-id="@ticket.Id">Historial</a>
+                        </td>
+                    </tr>
+                    contador++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="9" class="text-center">No hay tickets registrados.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" asp-action="CrearTicket">➕ Crear nuevo ticket</a>
+</div>
+<a href="@Url.Action("Index", "Admin")" class="btn btn-secondary mt-3">← Regresar a Inicio</a>
+
+@section Scripts {
+    <script>
+        // Aquí puedes agregar funciones adicionales si deseas más interactividad
+    </script>
+}
+
+@functions {
+    string GetEstadoColor(string estado)
+    {
+        return estado switch
+        {
+            "Abierto" => "primary",
+            "En Proceso" => "warning",
+            "Cerrado" => "success",
+            _ => "secondary"
+        };
+    }
+}
+
